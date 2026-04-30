@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía Interactiva – Propuesta de Investigación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+/* ── DESIGN TOKENS ────────────────────────────── */
+:root,[data-theme="light"]{
+  --color-bg:#f7f6f2;--color-surface:#f9f8f5;--color-surface-2:#fbfbf9;
+  --color-surface-offset:#f3f0ec;--color-surface-dynamic:#e6e4df;
+  --color-divider:#dcd9d5;--color-border:#d4d1ca;
+  --color-text:#28251d;--color-text-muted:#7a7974;--color-text-faint:#bab9b4;
+  --color-text-inverse:#f9f8f4;
+  --color-primary:#01696f;--color-primary-hover:#0c4e54;--color-primary-active:#0f3638;
+  --color-primary-highlight:#cedcd8;
+  --color-gold:#d19900;--color-gold-highlight:#e9e0c6;
+  --color-success:#437a22;--color-success-highlight:#d4dfcc;
+  --color-error:#a12c7b;--color-error-highlight:#e0ced7;
+  --color-blue:#006494;--color-blue-highlight:#c6d8e4;
+  --color-orange:#da7101;--color-orange-highlight:#e7d7c4;
+  --radius-sm:.375rem;--radius-md:.5rem;--radius-lg:.75rem;--radius-xl:1rem;--radius-full:9999px;
+  --shadow-sm:0 1px 2px oklch(.2 .01 80/.06);--shadow-md:0 4px 12px oklch(.2 .01 80/.08);--shadow-lg:0 12px 32px oklch(.2 .01 80/.12);
+  --font-display:'Instrument Serif',Georgia,serif;--font-body:'Inter','Helvetica Neue',sans-serif;
+  --text-xs:clamp(.75rem,.7rem + .25vw,.875rem);--text-sm:clamp(.875rem,.8rem + .35vw,1rem);
+  --text-base:clamp(1rem,.95rem + .25vw,1.125rem);--text-lg:clamp(1.125rem,1rem + .75vw,1.5rem);
+  --text-xl:clamp(1.5rem,1.2rem + 1.25vw,2.25rem);
+  --space-1:.25rem;--space-2:.5rem;--space-3:.75rem;--space-4:1rem;--space-5:1.25rem;
+  --space-6:1.5rem;--space-8:2rem;--space-10:2.5rem;--space-12:3rem;--space-16:4rem;
+  --transition:180ms cubic-bezier(.16,1,.3,1);
+}
+[data-theme="dark"]{
+  --color-bg:#171614;--color-surface:#1c1b19;--color-surface-2:#201f1d;
+  --color-surface-offset:#1d1c1a;--color-surface-dynamic:#2d2c2a;
+  --color-divider:#262523;--color-border:#393836;
+  --color-text:#cdccca;--color-text-muted:#797876;--color-text-faint:#5a5957;
+  --color-text-inverse:#2b2a28;
+  --color-primary:#4f98a3;--color-primary-hover:#227f8b;--color-primary-active:#1a626b;
+  --color-primary-highlight:#313b3b;
+  --color-gold:#e8af34;--color-gold-highlight:#4d4332;
+  --color-success:#6daa45;--color-success-highlight:#3a4435;
+  --color-error:#d163a7;--color-error-highlight:#4c3d46;
+  --color-blue:#5591c7;--color-blue-highlight:#3a4550;
+  --color-orange:#fdab43;--color-orange-highlight:#564b3e;
+  --shadow-sm:0 1px 2px oklch(0 0 0/.2);--shadow-md:0 4px 12px oklch(0 0 0/.3);--shadow-lg:0 12px 32px oklch(0 0 0/.4);
+}
+/* ── BASE ─────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;scroll-behavior:smooth}
+body{min-height:100dvh;font-family:var(--font-body);font-size:var(--text-base);color:var(--color-text);background:var(--color-bg);line-height:1.6}
+img,svg{display:block;max-width:100%}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:none}
+textarea{resize:vertical}
+a,button,[role=button]{transition:color var(--transition),background var(--transition),border-color var(--transition),box-shadow var(--transition)}
+:focus-visible{outline:2px solid var(--color-primary);outline-offset:3px;border-radius:var(--radius-sm)}
+/* ── LAYOUT ───────────────────────────────────── */
+.app-shell{display:grid;grid-template-rows:auto 1fr;grid-template-columns:280px 1fr;min-height:100dvh}
+.topbar{grid-column:1/-1;display:flex;align-items:center;gap:var(--space-4);padding:0 var(--space-6);height:56px;background:var(--color-surface);border-bottom:1px solid var(--color-border);position:sticky;top:0;z-index:100}
+.sidebar{grid-row:2;overflow-y:auto;background:var(--color-surface);border-right:1px solid var(--color-border);padding:var(--space-4) 0;position:sticky;top:56px;height:calc(100dvh - 56px)}
+.main-content{grid-row:2;padding:var(--space-8) var(--space-10);overflow-y:auto;min-height:calc(100dvh - 56px)}
+/* ── LOGO ─────────────────────────────────────── */
+.logo{display:flex;align-items:center;gap:var(--space-3);text-decoration:none;color:var(--color-text)}
+.logo-mark{width:32px;height:32px;flex-shrink:0}
+.logo-text{font-family:var(--font-display);font-size:var(--text-base);font-weight:400;line-height:1.2;color:var(--color-text)}
+.logo-text small{display:block;font-family:var(--font-body);font-size:var(--text-xs);color:var(--color-text-muted);font-style:normal}
+/* ── PROGRESS BAR ─────────────────────────────── */
+.progress-wrap{flex:1;max-width:300px;margin-left:auto;display:flex;align-items:center;gap:var(--space-3)}
+.progress-label{font-size:var(--text-xs);color:var(--color-text-muted);white-space:nowrap}
+.progress-bar{flex:1;height:6px;background:var(--color-surface-dynamic);border-radius:var(--radius-full);overflow:hidden}
+.progress-fill{height:100%;background:var(--color-primary);border-radius:var(--radius-full);transition:width .5s cubic-bezier(.16,1,.3,1)}
+/* ── THEME TOGGLE ─────────────────────────────── */
+.theme-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-md);color:var(--color-text-muted)}
+.theme-btn:hover{background:var(--color-surface-dynamic);color:var(--color-text)}
+/* ── SIDEBAR ITEMS ────────────────────────────── */
+.sidebar-section{padding:var(--space-3) var(--space-4) var(--space-2);font-size:var(--text-xs);color:var(--color-text-faint);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.sidebar-item{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-2) var(--space-4);cursor:pointer;border-radius:0;transition:background var(--transition),color var(--transition);color:var(--color-text-muted);font-size:var(--text-sm);text-align:left;width:100%;border:none;background:none;position:relative}
+.sidebar-item:hover{background:var(--color-surface-dynamic);color:var(--color-text)}
+.sidebar-item.active{background:var(--color-primary-highlight);color:var(--color-primary);font-weight:500}
+.sidebar-item.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--color-primary);border-radius:0 2px 2px 0}
+.sidebar-item.done .item-num{background:var(--color-success);color:var(--color-text-inverse)}
+.sidebar-item .item-num{width:22px;height:22px;border-radius:var(--radius-full);background:var(--color-surface-dynamic);color:var(--color-text-faint);font-size:var(--text-xs);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:600;transition:background var(--transition),color var(--transition)}
+.sidebar-item.active .item-num{background:var(--color-primary);color:var(--color-text-inverse)}
+.sidebar-item .item-label{flex:1;line-height:1.3}
+.sidebar-item .done-check{width:16px;height:16px;color:var(--color-success);opacity:0;transition:opacity var(--transition)}
+.sidebar-item.done .done-check{opacity:1}
+/* ── CONTENT PANELS ───────────────────────────── */
+.item-panel{display:none;max-width:860px}
+.item-panel.active{display:block}
+.item-header{margin-bottom:var(--space-6)}
+.item-badge{display:inline-flex;align-items:center;gap:var(--space-2);padding:var(--space-1) var(--space-3);border-radius:var(--radius-full);font-size:var(--text-xs);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:var(--space-3)}
+.item-title{font-family:var(--font-display);font-size:var(--text-xl);color:var(--color-text);line-height:1.2;margin-bottom:var(--space-2)}
+.item-subtitle{font-size:var(--text-sm);color:var(--color-text-muted);max-width:65ch}
+/* ── TABS ─────────────────────────────────────── */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--color-border);margin-bottom:var(--space-6);overflow-x:auto}
+.tab-btn{padding:var(--space-3) var(--space-4);font-size:var(--text-sm);color:var(--color-text-muted);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:color var(--transition),border-color var(--transition);font-weight:500}
+.tab-btn:hover{color:var(--color-text)}
+.tab-btn.active{color:var(--color-primary);border-bottom-color:var(--color-primary)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+/* ── CONTENT CARDS ────────────────────────────── */
+.info-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-6);margin-bottom:var(--space-4)}
+.info-card h3{font-size:var(--text-base);font-weight:600;margin-bottom:var(--space-3);color:var(--color-text)}
+.info-card p{font-size:var(--text-base);color:var(--color-text-muted);line-height:1.7;margin-bottom:var(--space-3);max-width:70ch}
+.info-card p:last-child{margin-bottom:0}
+.info-card ul,
+.info-card ol{padding-left:var(--space-5);margin-bottom:var(--space-3)}
+.info-card li{font-size:var(--text-base);color:var(--color-text-muted);line-height:1.7;margin-bottom:var(--space-2)}
+.info-card li:last-child{margin-bottom:0}
+.highlight-box{border-radius:var(--radius-md);padding:var(--space-4);margin-bottom:var(--space-4);border-left:4px solid}
+.highlight-box.tip{background:var(--color-primary-highlight);border-color:var(--color-primary)}
+.highlight-box.tip h4{color:var(--color-primary);font-size:var(--text-sm);font-weight:600;margin-bottom:var(--space-2)}
+.highlight-box.example{background:var(--color-gold-highlight);border-color:var(--color-gold)}
+.highlight-box.example h4{color:var(--color-gold);font-size:var(--text-sm);font-weight:600;margin-bottom:var(--space-2)}
+.highlight-box.warning{background:var(--color-error-highlight);border-color:var(--color-error)}
+.highlight-box.warning h4{color:var(--color-error);font-size:var(--text-sm);font-weight:600;margin-bottom:var(--space-2)}
+.highlight-box p{font-size:var(--text-sm);color:var(--color-text);line-height:1.6;margin-bottom:0}
+/* ── RESOURCE LINKS ───────────────────────────── */
+.resources-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--space-3);margin-top:var(--space-2)}
+.resource-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-4);display:flex;flex-direction:column;gap:var(--space-2);transition:box-shadow var(--transition),border-color var(--transition)}
+.resource-card:hover{box-shadow:var(--shadow-md);border-color:var(--color-primary)}
+.resource-card a{text-decoration:none;color:inherit}
+.resource-tag{display:inline-flex;align-items:center;gap:var(--space-1);padding:2px var(--space-2);border-radius:var(--radius-full);font-size:var(--text-xs);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.tag-video{background:var(--color-error-highlight);color:var(--color-error)}
+.tag-article{background:var(--color-blue-highlight);color:var(--color-blue)}
+.tag-guide{background:var(--color-success-highlight);color:var(--color-success)}
+.tag-tool{background:var(--color-orange-highlight);color:var(--color-orange)}
+.resource-title{font-size:var(--text-sm);font-weight:500;color:var(--color-text);line-height:1.4}
+.resource-desc{font-size:var(--text-xs);color:var(--color-text-muted);line-height:1.5}
+.resource-link{font-size:var(--text-xs);color:var(--color-primary);display:flex;align-items:center;gap:4px;margin-top:auto}
+/* ── EXAMPLE BLOCKS ──────────────────────────── */
+.example-block{background:var(--color-surface-offset);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:var(--space-4) var(--space-5);margin-bottom:var(--space-4);font-family:var(--font-body)}
+.example-block .ex-label{font-size:var(--text-xs);font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--color-text-faint);margin-bottom:var(--space-2)}
+.example-block p{font-size:var(--text-sm);color:var(--color-text);line-height:1.7;font-style:italic}
+.example-block p strong{font-style:normal;color:var(--color-primary)}
+/* ── STUDENT WORKSPACE ───────────────────────── */
+.workspace{margin-top:var(--space-8);background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-xl);overflow:hidden}
+.workspace-header{background:var(--color-primary);color:var(--color-text-inverse);padding:var(--space-4) var(--space-6);display:flex;align-items:center;gap:var(--space-3)}
+.workspace-header svg{flex-shrink:0}
+.workspace-header h3{font-size:var(--text-base);font-weight:600}
+.workspace-header p{font-size:var(--text-xs);opacity:.8}
+.workspace-fields{padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-5)}
+.field-group label{display:block;font-size:var(--text-sm);font-weight:600;color:var(--color-text);margin-bottom:var(--space-2)}
+.field-group .field-hint{font-size:var(--text-xs);color:var(--color-text-muted);margin-bottom:var(--space-2)}
+.field-group textarea,.field-group input[type=text]{width:100%;padding:var(--space-3) var(--space-4);border:1px solid var(--color-border);border-radius:var(--radius-md);background:var(--color-surface-2);color:var(--color-text);font-size:var(--text-sm);line-height:1.6;transition:border-color var(--transition),box-shadow var(--transition)}
+.field-group textarea:focus,.field-group input[type=text]:focus{border-color:var(--color-primary);box-shadow:0 0 0 3px oklch(from var(--color-primary) l c h/.15);outline:none}
+.field-group textarea{min-height:140px}
+.char-count{font-size:var(--text-xs);color:var(--color-text-faint);text-align:right;margin-top:var(--space-1)}
+.save-indicator{font-size:var(--text-xs);color:var(--color-success);display:flex;align-items:center;gap:4px;opacity:0;transition:opacity var(--transition)}
+.save-indicator.visible{opacity:1}
+/* ── NAV BUTTONS ─────────────────────────────── */
+.nav-footer{display:flex;justify-content:space-between;align-items:center;margin-top:var(--space-8);padding-top:var(--space-6);border-top:1px solid var(--color-border)}
+.btn{display:inline-flex;align-items:center;gap:var(--space-2);padding:var(--space-3) var(--space-5);border-radius:var(--radius-md);font-size:var(--text-sm);font-weight:500;transition:background var(--transition),color var(--transition),box-shadow var(--transition)}
+.btn-primary{background:var(--color-primary);color:var(--color-text-inverse)}
+.btn-primary:hover{background:var(--color-primary-hover);box-shadow:var(--shadow-sm)}
+.btn-secondary{background:var(--color-surface-dynamic);color:var(--color-text)}
+.btn-secondary:hover{background:var(--color-surface-offset);box-shadow:var(--shadow-sm)}
+.btn-outline{border:1px solid var(--color-border);color:var(--color-text-muted)}
+.btn-outline:hover{border-color:var(--color-primary);color:var(--color-primary);background:var(--color-primary-highlight)}
+.btn:disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
+/* ── STEP GUIDE ──────────────────────────────── */
+.step-guide{counter-reset:step;display:flex;flex-direction:column;gap:var(--space-4)}
+.step-item{display:flex;gap:var(--space-4);align-items:flex-start}
+.step-item::before{counter-increment:step;content:counter(step);width:28px;height:28px;border-radius:var(--radius-full);background:var(--color-primary);color:var(--color-text-inverse);font-size:var(--text-xs);font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.step-item-content h4{font-size:var(--text-sm);font-weight:600;margin-bottom:var(--space-1)}
+.step-item-content p{font-size:var(--text-sm);color:var(--color-text-muted);line-height:1.6;max-width:60ch}
+/* ── VERB TABLE ──────────────────────────────── */
+.verb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:var(--space-2);margin-top:var(--space-3)}
+.verb-chip{padding:var(--space-2) var(--space-3);background:var(--color-surface-offset);border:1px solid var(--color-border);border-radius:var(--radius-md);font-size:var(--text-xs);color:var(--color-text);text-align:center}
+/* ── WELCOME SCREEN ──────────────────────────── */
+#welcome-panel{display:block}
+.welcome-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:var(--space-10);margin-bottom:var(--space-6);max-width:720px}
+.welcome-title{font-family:var(--font-display);font-size:var(--text-xl);line-height:1.2;margin-bottom:var(--space-4)}
+.welcome-intro{font-size:var(--text-base);color:var(--color-text-muted);margin-bottom:var(--space-6);max-width:60ch;line-height:1.7}
+.items-summary{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:var(--space-3);margin-bottom:var(--space-8)}
+.summary-card{background:var(--color-surface-offset);border-radius:var(--radius-md);padding:var(--space-3) var(--space-4);border:1px solid var(--color-border)}
+.summary-card .num{font-size:var(--text-xs);font-weight:700;color:var(--color-primary);margin-bottom:2px}
+.summary-card .name{font-size:var(--text-sm);color:var(--color-text);font-weight:500}
+/* ── EXPORT ──────────────────────────────────── */
+.topbar-actions{display:flex;align-items:center;gap:var(--space-2);margin-left:auto}
+/* ── RESPONSIVE ──────────────────────────────── */
+@media(max-width:768px){
+  .app-shell{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .main-content{padding:var(--space-4) var(--space-4)}
+  .resources-grid{grid-template-columns:1fr}
+}
+/* ── ANIMATIONS ──────────────────────────────── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.item-panel.active{animation:fadeUp .25s cubic-bezier(.16,1,.3,1) both}
+</style>
+</head>
+<body>
+<div class="app-shell">
+
+<!-- ── TOP BAR ───────────────────────────────── -->
+<header class="topbar">
+  <a href="#" class="logo" onclick="showWelcome();return false">
+    <svg class="logo-mark" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Logo">
+      <rect width="32" height="32" rx="8" fill="var(--color-primary)"/>
+      <rect x="8" y="8" width="7" height="16" rx="2" fill="white" opacity=".9"/>
+      <rect x="17" y="8" width="7" height="7" rx="2" fill="white" opacity=".5"/>
+      <rect x="17" y="17" width="7" height="7" rx="2" fill="white" opacity=".9"/>
+    </svg>
+    <span class="logo-text">Propuesta de Investigación<small>Guía Interactiva · Univalle</small></span>
+  </a>
+  <div class="topbar-actions">
+    <div class="progress-wrap">
+      <span class="progress-label" id="progress-label">0 de 11</span>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+    <button class="btn btn-outline" onclick="exportContent()" title="Exportar mi propuesta">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Exportar
+    </button>
+    <button class="theme-btn" data-theme-toggle aria-label="Cambiar tema">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- ── SIDEBAR ────────────────────────────────── -->
+<nav class="sidebar" aria-label="Ítems de la propuesta">
+  <div class="sidebar-section">Ítems de la Propuesta</div>
+  <!-- js will render sidebar items -->
+  <div id="sidebar-nav"></div>
+</nav>
+
+<!-- ── MAIN ───────────────────────────────────── -->
+<main class="main-content" id="main-content">
+
+<!-- WELCOME PANEL -->
+<div id="welcome-panel">
+  <div class="welcome-card">
+    <p style="font-size:var(--text-xs);color:var(--color-primary);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:var(--space-2)">✦ Tecnología en Desarrollo de Software · I Semestre</p>
+    <h1 class="welcome-title">Guía Interactiva para Elaborar tu Propuesta de Investigación</h1>
+    <p class="welcome-intro">Esta herramienta te acompañará paso a paso en la construcción de tu propuesta. Cada ítem incluye una descripción detallada, orientaciones prácticas, ejemplos y recursos de apoyo. Al final podrás exportar tu propuesta completa.</p>
+    <div class="items-summary" id="items-summary"></div>
+    <button class="btn btn-primary" onclick="navigateTo(0)" style="font-size:var(--text-base);padding:var(--space-4) var(--space-8)">
+      Comenzar ahora
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- DYNAMIC PANELS -->
+<div id="panels-container"></div>
+
+</main>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════
+   DATA — 11 ITEMS
+══════════════════════════════════════════════ */
+const ITEMS = [
+{
+  id:'item-1',
+  num:1,
+  title:'Datos Generales del Proyecto',
+  subtitle:'Información básica de identificación que sitúa y contextualiza tu trabajo de investigación.',
+  badge:'Identificación',
+  badgeColor:'var(--color-blue)',
+  badgeBg:'var(--color-blue-highlight)',
+  que:`<p>Los <strong>datos generales</strong> son la tarjeta de presentación de tu propuesta. Permiten identificar rápidamente de qué trata el proyecto, quién lo desarrolla, en qué contexto académico se enmarca y cuándo fue formulado.</p>
+  <p>Aunque parecen simples, estos datos son fundamentales para la trazabilidad del proyecto: permiten que cualquier lector comprenda al instante el origen del trabajo antes de leer su contenido.</p>
+  <div class="highlight-box tip"><h4>💡 ¿Por qué es importante?</h4><p>Un título bien elegido puede aumentar la visibilidad de tu investigación y orientar al lector sobre su contenido, enfoque y alcance desde el primer momento.</p></div>`,
+  como:`<div class="step-guide">
+  <div class="step-item"><div class="step-item-content"><h4>Elige un título provisional claro y específico</h4><p>El título debe indicar: el fenómeno o variable principal, el objeto de estudio y, si es posible, el contexto o lugar. Evita títulos demasiado generales como "Investigación sobre tecnología".</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Usa entre 12 y 20 palabras en el título</h4><p>Títulos muy cortos son vagos; los muy largos se vuelven confusos. Busca el equilibrio: informativo pero conciso.</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Registra todos los datos con precisión</h4><p>Escribe los nombres completos de los integrantes, el nombre oficial del programa y la fecha exacta de elaboración.</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Revisa el título al finalizar la propuesta</h4><p>Es común ajustarlo una vez que el planteamiento del problema y los objetivos están definidos. El título definitivo debe concordar perfectamente con el contenido.</p></div></div>
+  </div>
+  <div class="highlight-box warning" style="margin-top:var(--space-5)"><h4>⚠️ Errores frecuentes</h4><p>• Usar preguntas como título ("¿Cómo mejorar...?") — los títulos son enunciados afirmativos.<br>• Incluir la palabra "estudio de caso" cuando no lo es.<br>• Títulos que no coinciden con los objetivos del trabajo.</p></div>`,
+  ejemplos:`
+  <div class="highlight-box example"><h4>📋 Estructura recomendada del título</h4><p><strong>[Variable o fenómeno]</strong> en <strong>[contexto/lugar]</strong>: <strong>[tipo de estudio o enfoque]</strong></p></div>
+  <div class="example-block"><div class="ex-label">Ejemplo 1 – Tecnología</div><p><strong>"Implementación de un sistema de gestión de inventarios basado en código QR para la MIPYME textil en el norte del Cauca"</strong></p></div>
+  <div class="example-block"><div class="ex-label">Ejemplo 2 – Educación</div><p><strong>"Factores asociados al abandono escolar en estudiantes de educación media en la zona rural de Palmira, Valle del Cauca"</strong></p></div>
+  <div class="example-block"><div class="ex-label">Ejemplo 3 – Salud</div><p><strong>"Análisis de hábitos alimenticios y su relación con el rendimiento académico en universitarios de primer semestre"</strong></p></div>`,
+  recursos:[
+    {tag:'video',tagLabel:'Video',title:'Cómo formular el título de una investigación',desc:'Explicación clara sobre los criterios para elegir un buen título.',link:'https://www.youtube.com/results?search_query=como+formular+titulo+investigacion'},
+    {tag:'guide',tagLabel:'Guía',title:'Estructura de una propuesta de investigación',desc:'Documento base de la Universidad de Antioquia sobre propuestas.',link:'https://www.udea.edu.co/wps/portal/udea/web/inicio/investigacion'},
+    {tag:'article',tagLabel:'Artículo',title:'Normas APA 7.ª edición – Títulos',desc:'Guía oficial de la American Psychological Association para títulos académicos.',link:'https://apastyle.apa.org/style-grammar-guidelines/paper-format/title-page'}
+  ],
+  fields:[
+    {key:'titulo',label:'Título provisional del proyecto',hint:'Escribe el título que mejor describa tu propuesta de investigación.',placeholder:'Ej. Análisis del impacto de las redes sociales en el rendimiento académico de estudiantes universitarios en Palmira...',type:'input'},
+    {key:'integrantes',label:'Nombre(s) del(os) estudiante(s)',hint:'Escribe el nombre completo de cada integrante del grupo.',placeholder:'Nombre completo 1\nNombre completo 2 (si aplica)',type:'textarea'},
+    {key:'info_general',label:'Programa · Semestre · Docente · Fecha',hint:'Completa la información del curso.',placeholder:'Programa: Tecnología en Desarrollo de Software\nSemestre: I\nDocente: \nFecha: ',type:'textarea'}
+  ]
+},
+{
+  id:'item-2',
+  num:2,
+  title:'Planteamiento del Problema',
+  subtitle:'Descripción fundamentada de la situación que justifica la necesidad de investigar.',
+  badge:'Problema',
+  badgeColor:'var(--color-error)',
+  badgeBg:'var(--color-error-highlight)',
+  que:`<p>El <strong>planteamiento del problema</strong> es el corazón de la propuesta. Aquí describes con detalle la situación que detectaste y que merece ser investigada: qué está pasando, dónde ocurre, a quiénes afecta y desde cuándo.</p>
+  <p>No se trata de opinar; se trata de <em>evidenciar</em>. Debes apoyarte en datos, estadísticas, observaciones o literatura para demostrar que el problema existe y que su estudio es necesario.</p>
+  <div class="highlight-box tip"><h4>💡 Recuerda</h4><p>Un buen planteamiento responde tres preguntas esenciales: <strong>¿Qué ocurre?</strong> (descripción del hecho), <strong>¿Dónde y a quiénes afecta?</strong> (contextualización) y <strong>¿Por qué es un problema o necesidad?</strong> (sustentación).</p></div>`,
+  como:`<div class="step-guide">
+  <div class="step-item"><div class="step-item-content"><h4>Contextualiza la situación (de lo general a lo específico)</h4><p>Comienza describiendo el contexto global o nacional, luego acércate al contexto local o institucional donde se da el problema.</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Describe el problema con datos concretos</h4><p>Usa cifras, porcentajes o referencias a estudios previos. Ejemplo: "Según el DANE (2023), el 40% de las MIPYMES no cuenta con sistemas digitales de gestión..."</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Identifica las causas y consecuencias</h4><p>Puedes usar la técnica del árbol de problemas: causas (raíces) → problema central (tronco) → efectos (ramas).</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Señala el vacío o brecha</h4><p>Explica qué se ha hecho hasta ahora y qué sigue sin resolverse o estudiarse. Ahí es donde encaja tu investigación.</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Delimita el problema</h4><p>Especifica el tiempo, el espacio geográfico y la población a la que se refiere tu problema para evitar que sea demasiado amplio.</p></div></div>
+  </div>`,
+  ejemplos:`
+  <div class="highlight-box example"><h4>📋 Estructura sugerida (3 párrafos)</h4><p><strong>Párrafo 1:</strong> Contexto global/nacional del fenómeno.<br><strong>Párrafo 2:</strong> Situación específica en el contexto local / institución / comunidad con datos.<br><strong>Párrafo 3:</strong> Consecuencias si no se estudia/resuelve el problema y vacío que dejará sin llenar.</p></div>
+  <div class="example-block"><div class="ex-label">Ejemplo de planteamiento (área tecnología)</div><p>La transformación digital de las pequeñas y medianas empresas es reconocida globalmente como un factor determinante de competitividad. Sin embargo, según la Encuesta Nacional de Uso de TIC del DANE (2022), <strong>sólo el 28% de las MIPYMES en el Valle del Cauca cuenta con sistemas informatizados de gestión de inventarios</strong>, lo que genera pérdidas estimadas del 15% de sus ingresos anuales por descontrol logístico. En el municipio de Palmira, este fenómeno afecta especialmente al sector textil informal, donde la ausencia de herramientas digitales limita el crecimiento y la formalización empresarial. Si esta situación persiste sin ser documentada y analizada, será difícil proponer soluciones tecnológicas pertinentes a las necesidades reales del sector.</p></div>`,
+  recursos:[
+    {tag:'video',tagLabel:'Video',title:'Planteamiento del problema de investigación',desc:'Video tutorial sobre cómo redactar el planteamiento del problema con ejemplos.',link:'https://www.youtube.com/results?search_query=planteamiento+del+problema+de+investigacion+tutorial'},
+    {tag:'tool',tagLabel:'Herramienta',title:'Árbol de problemas – técnica visual',desc:'Guía para construir el árbol de problemas y estructurar el planteamiento.',link:'https://www.youtube.com/results?search_query=arbol+de+problemas+investigacion'},
+    {tag:'article',tagLabel:'Artículo',title:'Bernal Torres – Metodología de la Investigación',desc:'Capítulo sobre el planteamiento del problema en investigación social.',link:'https://scholar.google.com/scholar?q=Bernal+Torres+Metodologia+de+la+investigacion+planteamiento'},
+    {tag:'guide',tagLabel:'Guía',title:'DANE – Estadísticas para contextualizar problemas',desc:'Fuente oficial de datos para sustentar el planteamiento del problema en Colombia.',link:'https://www.dane.gov.co/index.php/estadisticas-por-tema'}
+  ],
+  fields:[
+    {key:'situacion',label:'Descripción de la situación problemática',hint:'¿Qué ocurre? ¿Dónde? ¿A quiénes afecta? Apóyate en datos o referencias.',placeholder:'Describe con detalle la situación que identificaste como problema o necesidad de investigación. Incluye datos, cifras o referencias que evidencien la existencia del problema...',type:'textarea'},
+    {key:'por_que',label:'¿Por qué es un problema o necesidad de investigación?',hint:'Explica las consecuencias de que esta situación exista y no se investigue.',placeholder:'Explica las causas, efectos y el vacío de conocimiento que justifica investigar esta situación...',type:'textarea'}
+  ]
+},
+{
+  id:'item-3',
+  num:3,
+  title:'Formulación del Problema',
+  subtitle:'La pregunta de investigación central: concreta, delimitada e investigable.',
+  badge:'Pregunta Central',
+  badgeColor:'var(--color-primary)',
+  badgeBg:'var(--color-primary-highlight)',
+  que:`<p>La <strong>formulación del problema</strong> consiste en transformar toda la descripción del planteamiento en una sola pregunta de investigación: clara, precisa, delimitada y que sea posible responder con datos o evidencia empírica.</p>
+  <p>Es la brújula que orienta todo el estudio. Si la pregunta es vaga o demasiado amplia, el estudio no tendrá dirección. Si es demasiado específica, puede volverse trivial.</p>
+  <div class="highlight-box tip"><h4>💡 Criterio clave</h4><p>Una buena pregunta de investigación no puede responderse con un simple sí/no ni con datos que ya existen. Debe implicar un proceso de recolección y análisis de información.</p></div>`,
+  como:`<div class="step-guide">
+  <div class="step-item"><div class="step-item-content"><h4>Identifica las variables principales de tu problema</h4><p>¿Qué estás estudiando? ¿Cuál es la relación que te interesa explorar? (causa-efecto, correlación, descripción, comparación).</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Elige el tipo de pregunta según tu propósito</h4><p><strong>Descriptiva:</strong> ¿Cómo es…? / ¿Cuál es el nivel de…? <br><strong>Explicativa:</strong> ¿Por qué…? / ¿Qué factores influyen en…?<br><strong>Comparativa:</strong> ¿Cuáles son las diferencias entre…?<br><strong>Correlacional:</strong> ¿Qué relación existe entre X e Y?</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Delimita con precisión</h4><p>Incluye en la pregunta: la población (¿quiénes?), el contexto (¿dónde?) y, si aplica, el tiempo (¿cuándo?).</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Verifica que sea investigable y ética</h4><p>La pregunta debe poder responderse con datos que puedas recolectar dentro de tus posibilidades (tiempo, acceso, recursos) y sin vulnerar principios éticos.</p></div></div>
+  </div>`,
+  ejemplos:`
+  <div class="example-block"><div class="ex-label">Pregunta descriptiva</div><p>¿<strong>Cuál es el nivel de uso de herramientas digitales de gestión</strong> en las MIPYMES del sector textil del municipio de Palmira durante el segundo semestre de 2025?</p></div>
+  <div class="example-block"><div class="ex-label">Pregunta explicativa</div><p>¿<strong>Qué factores inciden en el abandono del uso de aplicaciones móviles educativas</strong> en estudiantes de primer semestre de Tecnología en Desarrollo de Software de la Universidad del Valle, sede Norte del Cauca, en 2025?</p></div>
+  <div class="example-block"><div class="ex-label">Pregunta correlacional</div><p>¿<strong>Qué relación existe entre el uso de redes sociales con fines académicos y el rendimiento escolar</strong> en estudiantes universitarios de primer semestre en Colombia?</p></div>
+  <div class="highlight-box warning"><h4>⚠️ Preguntas que NO sirven como pregunta de investigación</h4><p>❌ "¿Cómo crear una app?" (es un objetivo de diseño, no de investigación)<br>❌ "¿Es buena la tecnología en la educación?" (demasiado vaga, respuesta trivial)<br>❌ "¿Cuántos años tiene la Internet?" (respuesta en enciclopedia)</p></div>`,
+  recursos:[
+    {tag:'video',tagLabel:'Video',title:'Cómo formular la pregunta de investigación',desc:'Tutorial paso a paso sobre formulación de preguntas de investigación.',link:'https://www.youtube.com/results?search_query=como+formular+pregunta+de+investigacion'},
+    {tag:'article',tagLabel:'Artículo',title:'Hernández Sampieri – Formulación del problema',desc:'Referencia clásica en metodología sobre cómo plantear problemas de investigación.',link:'https://scholar.google.com/scholar?q=Hernandez+Sampieri+formulacion+del+problema+investigacion'},
+    {tag:'guide',tagLabel:'Guía',title:'Criterios para evaluar preguntas de investigación',desc:'Lista de verificación para saber si tu pregunta de investigación es adecuada.',link:'https://www.youtube.com/results?search_query=criterios+buena+pregunta+investigacion+cualitativa+cuantitativa'}
+  ],
+  fields:[
+    {key:'pregunta',label:'Pregunta principal de investigación',hint:'Redáctala de forma clara, delimitada e investigable. Debe responder a la situación descrita en el planteamiento del problema.',placeholder:'¿Cuál es / Qué relación existe entre / Por qué / Cómo influye...?',type:'textarea'}
+  ]
+},
+{
+  id:'item-4',
+  num:4,
+  title:'Justificación',
+  subtitle:'Argumentación sólida sobre por qué vale la pena realizar este estudio.',
+  badge:'Relevancia',
+  badgeColor:'var(--color-gold)',
+  badgeBg:'var(--color-gold-highlight)',
+  que:`<p>La <strong>justificación</strong> responde a la pregunta: <em>¿por qué merece la pena invertir tiempo, esfuerzo y recursos en esta investigación?</em> Es el espacio donde convences al lector (y a ti mismo) de la importancia del estudio.</p>
+  <p>Una buena justificación argumenta desde tres ángulos: el académico (aportes al conocimiento), el social/práctico (beneficios para personas o comunidades) y el formativo (qué aprenderás tú como futuro tecnólogo).</p>
+  <div class="highlight-box tip"><h4>💡 Criterios clásicos de justificación (Hernández Sampieri)</h4><p><strong>Conveniencia:</strong> ¿Para qué sirve el estudio?<br><strong>Relevancia social:</strong> ¿A quiénes beneficia?<br><strong>Valor teórico:</strong> ¿Llena un vacío de conocimiento?<br><strong>Utilidad metodológica:</strong> ¿Propone nuevas formas de estudiar el fenómeno?<br><strong>Viabilidad:</strong> ¿Es factible de llevar a cabo?</p></div>`,
+  como:`<div class="step-guide">
+  <div class="step-item"><div class="step-item-content"><h4>Argumenta la relevancia académica o disciplinar</h4><p>Explica qué nuevo conocimiento aportará tu estudio a la Tecnología en Desarrollo de Software o al área específica que investigas. ¿Qué vacío llena?</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Describe el impacto social o práctico</h4><p>¿A quiénes beneficiarán los resultados? ¿Cómo? ¿Qué problema práctico puede resolverse con tus hallazgos?</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Señala la importancia para tu formación</h4><p>¿Qué competencias y aprendizajes desarrollarás al realizar este proyecto? ¿Cómo se relaciona con tu perfil profesional?</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Usa lenguaje asertivo, no excesivamente pomposo</h4><p>Evita frases como "este estudio revolucionará la ciencia". Sé honesto sobre el alcance real de tu propuesta.</p></div></div>
+  </div>`,
+  ejemplos:`
+  <div class="example-block"><div class="ex-label">Justificación académica</div><p>A nivel disciplinar, este estudio contribuye a la comprensión de los factores que inciden en la adopción de tecnologías de gestión por parte de las MIPYMES colombianas, un tema que ha sido abordado principalmente en contextos urbanos y metropolitanos, pero escasamente en municipios intermedios como Palmira. <strong>Los resultados aportarán información empírica para el diseño de soluciones tecnológicas adaptadas a contextos rurales y semiurbanos</strong>, en línea con los Objetivos de Desarrollo Sostenible (ODS 8 y 9).</p></div>
+  <div class="example-block"><div class="ex-label">Justificación social</div><p>Los beneficiarios directos de este estudio serán los <strong>propietarios y empleados de las MIPYMES textiles de Palmira</strong>, quienes podrán acceder a recomendaciones prácticas sobre herramientas digitales accesibles para su contexto. De manera indirecta, la comunidad se beneficiará de empresas más competitivas y formalizadas que generan empleo estable.</p></div>`,
+  recursos:[
+    {tag:'video',tagLabel:'Video',title:'Cómo escribir la justificación de una investigación',desc:'Video con ejemplos prácticos de justificación de proyectos académicos.',link:'https://www.youtube.com/results?search_query=como+escribir+justificacion+de+investigacion'},
+    {tag:'article',tagLabel:'Artículo',title:'ODS – Marco de pertinencia social para investigaciones',desc:'Los Objetivos de Desarrollo Sostenible como marco de referencia para justificar investigaciones.',link:'https://www.un.org/sustainabledevelopment/es/objetivos-de-desarrollo-sostenible/'},
+    {tag:'guide',tagLabel:'Guía',title:'5 criterios de Hernández Sampieri para justificar',desc:'Resumen y aplicación de los criterios clásicos de justificación.',link:'https://www.youtube.com/results?search_query=criterios+justificacion+investigacion+Hernandez+Sampieri'}
+  ],
+  fields:[
+    {key:'justif_academica',label:'Relevancia académica o disciplinar',hint:'¿Qué vacío de conocimiento llena tu estudio? ¿Qué aporta a la Tecnología en Desarrollo de Software?',placeholder:'Este estudio contribuye al campo de... porque hasta ahora no se ha investigado...',type:'textarea'},
+    {key:'justif_social',label:'Impacto social y práctico',hint:'¿A quiénes benefician los resultados? ¿Cómo se traducen en mejoras concretas?',placeholder:'Los principales beneficiarios serán... Los resultados podrán usarse para...',type:'textarea'},
+    {key:'justif_formativa',label:'Importancia para tu formación profesional',hint:'¿Qué competencias desarrollarás? ¿Cómo se relaciona con tu perfil como tecnólogo?',placeholder:'Este proyecto contribuye a mi formación como tecnólogo porque me permitirá desarrollar...',type:'textarea'}
+  ]
+},
+{
+  id:'item-5',
+  num:5,
+  title:'Objetivos de la Investigación',
+  subtitle:'Los logros específicos que el estudio pretende alcanzar, expresados con verbos en infinitivo.',
+  badge:'Propósito',
+  badgeColor:'var(--color-success)',
+  badgeBg:'var(--color-success-highlight)',
+  que:`<p>Los <strong>objetivos</strong> definen lo que la investigación se propone lograr. Son la traducción de tu pregunta de investigación en acciones concretas y medibles. El <strong>objetivo general</strong> resume el propósito global del estudio; los <strong>objetivos específicos</strong> son los pasos que permiten alcanzarlo.</p>
+  <p>Los objetivos deben ser <em>SMART</em>: Específicos, Medibles, Alcanzables, Relevantes y Temporalmente definidos. Cada objetivo específico debe corresponder con una fase del diseño metodológico.</p>`,
+  como:`<div class="step-guide">
+  <div class="step-item"><div class="step-item-content"><h4>Redacta el objetivo general</h4><p>Un solo enunciado que resume el propósito central del estudio. Debe responder directamente a tu pregunta de investigación. Comienza siempre con un <strong>verbo en infinitivo de alto nivel</strong> (analizar, determinar, evaluar, establecer, comprender).</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Formula 3 o 4 objetivos específicos</h4><p>Cada uno debe representar una etapa lógica y secuencial del proceso: 1) caracterizar/identificar → 2) analizar/relacionar → 3) proponer/evaluar. Usa verbos de niveles más bajos de la Taxonomía de Bloom.</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Verifica coherencia interna</h4><p>La suma de los objetivos específicos debe "construir" el objetivo general. Si alcanzas todos los específicos, debes haber alcanzado el general.</p></div></div>
+  </div>
+  <div class="highlight-box tip" style="margin-top:var(--space-4)"><h4>🔤 Verbos recomendados por nivel (Taxonomía de Bloom)</h4>
+  <p style="margin-bottom:var(--space-2)"><strong>Objetivo general:</strong></p>
+  <div class="verb-grid">
+  <div class="verb-chip">Analizar</div><div class="verb-chip">Determinar</div><div class="verb-chip">Establecer</div><div class="verb-chip">Evaluar</div><div class="verb-chip">Comprender</div><div class="verb-chip">Caracterizar</div>
+  </div>
+  <p style="margin:var(--space-3) 0 var(--space-2)"><strong>Objetivos específicos:</strong></p>
+  <div class="verb-grid">
+  <div class="verb-chip">Identificar</div><div class="verb-chip">Describir</div><div class="verb-chip">Clasificar</div><div class="verb-chip">Comparar</div><div class="verb-chip">Relacionar</div><div class="verb-chip">Diseñar</div><div class="verb-chip">Proponer</div><div class="verb-chip">Calcular</div>
+  </div>
+  </div>`,
+  ejemplos:`
+  <div class="example-block"><div class="ex-label">Objetivo General</div><p><strong>Analizar</strong> los factores que inciden en el nivel de adopción de herramientas digitales de gestión por parte de las MIPYMES del sector textil del municipio de Palmira durante el segundo semestre de 2025.</p></div>
+  <div class="example-block"><div class="ex-label">Objetivos Específicos</div><p>1. <strong>Identificar</strong> las herramientas digitales de gestión utilizadas actualmente por las MIPYMES textiles de Palmira.<br>2. <strong>Describir</strong> los principales obstáculos tecnológicos, financieros y culturales que limitan la adopción de estas herramientas.<br>3. <strong>Relacionar</strong> el nivel de uso de herramientas digitales con indicadores de productividad y formalización empresarial.<br>4. <strong>Proponer</strong> lineamientos de intervención para promover la transformación digital en el sector estudiado.</p></div>
+  <div class="highlight-box warning"><h4>⚠️ Errores frecuentes</h4><p>❌ Verbos de acción que implican pasos metodológicos, no logros ("aplicar una encuesta", "visitar las empresas").<br>❌ Objetivos que no se corresponden con la pregunta de investigación.<br>❌ Más de 4 objetivos específicos en un trabajo de semestre.</p></div>`,
+  recursos:[
+    {tag:'video',tagLabel:'Video',title:'Cómo redactar objetivos de investigación',desc:'Tutorial con ejemplos de objetivos generales y específicos bien formulados.',link:'https://www.youtube.com/results?search_query=como+redactar+objetivos+de+investigacion+general+especificos'},
+    {tag:'guide',tagLabel:'Guía',title:'Taxonomía de Bloom revisada – Verbos por nivel',desc:'Lista completa de verbos cognitivos clasificados por nivel de complejidad.',link:'https://www.youtube.com/results?search_query=taxonomia+de+bloom+revisada+verbos+investigacion'},
+    {tag:'article',tagLabel:'Artículo',title:'Diferencia entre objetivos generales y específicos',desc:'Explicación detallada con ejemplos de la distinción entre objetivos.',link:'https://www.youtube.com/results?search_query=diferencia+objetivo+general+especifico+investigacion'}
+  ],
+  fields:[
+    {key:'obj_general',label:'Objetivo general',hint:'Un solo enunciado con verbo en infinitivo que resume el propósito central del estudio.',placeholder:'Analizar / Determinar / Establecer / Evaluar...',type:'textarea'},
+    {key:'obj_especificos',label:'Objetivos específicos (2 a 4)',hint:'Cada uno representa una etapa del proceso. Empieza cada uno con un verbo en infinitivo diferente.',placeholder:'1. Identificar...\n2. Describir...\n3. Relacionar...\n4. Proponer...',type:'textarea'}
+  ]
+},
+{
+  id:'item-6',
+  num:6,
+  title:'Hipótesis (si aplica)',
+  subtitle:'Respuesta tentativa y verificable a la pregunta de investigación.',
+  badge:'Predicción',
+  badgeColor:'var(--color-purple, #7a39bb)',
+  badgeBg:'oklch(from var(--color-primary-highlight) l c h / .5)',
+  que:`<p>La <strong>hipótesis</strong> es una afirmación provisional que el investigador plantea como posible respuesta a la pregunta de investigación, antes de recolectar los datos. Su función es orientar el diseño del estudio y definir qué se va a medir o comparar.</p>
+  <p>No todas las investigaciones requieren hipótesis. Las investigaciones <strong>descriptivas o exploratorias</strong> generalmente no las formulan; las investigaciones <strong>explicativas, correlacionales y cuasi-experimentales</strong> sí las requieren.</p>
+  <div class="highlight-box tip"><h4>💡 ¿Cuándo incluir hipótesis?</h4><p>Inclúyela si tu estudio busca explicar relaciones causa-efecto, correlaciones o diferencias entre grupos. Si solo describes un fenómeno, puedes omitirla o formular una hipótesis descriptiva.</p></div>`,
+  como:`<div class="step-guide">
+  <div class="step-item"><div class="step-item-content"><h4>Identifica las variables de tu pregunta</h4><p><strong>Variable independiente (VI):</strong> la causa o factor que influye.<br><strong>Variable dependiente (VD):</strong> el efecto o resultado que se mide.</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Redacta la hipótesis de trabajo (H1)</h4><p>Afirma una relación o diferencia que esperas encontrar. Usa la estructura: "Si [VI], entonces [VD]" o "Existe relación entre [VI] y [VD]".</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Redacta la hipótesis nula (H0) – solo si aplica</h4><p>Niega la relación que afirma H1. "No existe relación entre [VI] y [VD]". Se usa en estudios cuantitativos con pruebas estadísticas.</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Verifica que sea verificable</h4><p>La hipótesis debe poder confirmarse o rechazarse con los datos que recolectarás. Si no puedes medirla, reformúlala.</p></div></div>
+  </div>`,
+  ejemplos:`
+  <div class="example-block"><div class="ex-label">Hipótesis de trabajo (H1) – correlacional</div><p><strong>Las MIPYMES del sector textil de Palmira que utilizan herramientas digitales de gestión tienen niveles de productividad significativamente mayores</strong> que aquellas que no las usan.</p></div>
+  <div class="example-block"><div class="ex-label">Hipótesis nula (H0)</div><p>No existe diferencia estadísticamente significativa en los niveles de productividad entre las MIPYMES que usan herramientas digitales de gestión y las que no las utilizan.</p></div>
+  <div class="example-block"><div class="ex-label">Hipótesis descriptiva (investigación exploratoria)</div><p>El nivel de uso de herramientas digitales por parte de las MIPYMES textiles del municipio de Palmira es bajo, con menos del 30% de las empresas utilizando algún tipo de software de gestión.</p></div>`,
+  recursos:[
+    {tag:'video',tagLabel:'Video',title:'¿Qué es una hipótesis de investigación?',desc:'Explicación clara sobre tipos de hipótesis con ejemplos prácticos.',link:'https://www.youtube.com/results?search_query=que+es+hipotesis+de+investigacion+ejemplos'},
+    {tag:'article',tagLabel:'Artículo',title:'Hipótesis nula vs hipótesis de investigación',desc:'Diferencias, cuándo usarlas y cómo formularlas correctamente.',link:'https://www.youtube.com/results?search_query=hipotesis+nula+hipotesis+investigacion+diferencia'},
+    {tag:'guide',tagLabel:'Guía',title:'Investigaciones que no requieren hipótesis',desc:'¿Cuándo no es necesario formular hipótesis? Criterios y casos.',link:'https://www.youtube.com/results?search_query=cuando+no+se+formula+hipotesis+en+investigacion'}
+  ],
+  fields:[
+    {key:'hipotesis_trabajo',label:'Hipótesis principal de trabajo (H1)',hint:'Si tu investigación lo requiere, formula la respuesta tentativa que esperas comprobar. Si no aplica, escribe "No aplica" y justifica brevemente.',placeholder:'Las empresas/estudiantes/personas que... tienen/presentan/logran...\n\nO escribe: No aplica, porque esta investigación es de tipo descriptivo/exploratorio...',type:'textarea'},
+    {key:'hipotesis_especificas',label:'Hipótesis específicas (opcional)',hint:'Si tienes sub-preguntas o variables adicionales, puedes formular hipótesis para cada una.',placeholder:'H1a: ...\nH1b: ...',type:'textarea'}
+  ]
+},
+{
+  id:'item-7',
+  num:7,
+  title:'Marco Teórico y Antecedentes',
+  subtitle:'Fundamento conceptual y revisión crítica de la literatura que sustenta el estudio.',
+  badge:'Fundamentos',
+  badgeColor:'var(--color-blue)',
+  badgeBg:'var(--color-blue-highlight)',
+  que:`<p>El <strong>marco teórico</strong> es el conjunto de conceptos, teorías y hallazgos previos que fundamentan tu investigación. Permite al lector entender los términos clave del estudio, saber qué se ha investigado antes y comprender desde qué perspectiva teórica se aborda el problema.</p>
+  <p>Los <strong>antecedentes</strong> son los estudios previos directamente relacionados con tu tema: investigaciones, tesis, artículos y documentos que se han producido antes y que muestran el estado del conocimiento en el área.</p>
+  <div class="highlight-box tip"><h4>💡 Marco teórico ≠ copiar y pegar</h4><p>No se trata de transcribir definiciones de Wikipedia. Debes <strong>seleccionar, relacionar y analizar</strong> los conceptos que son relevantes para tu estudio específico, citando adecuadamente las fuentes.</p></div>`,
+  como:`<div class="step-guide">
+  <div class="step-item"><div class="step-item-content"><h4>Identifica los conceptos clave de tu investigación</h4><p>A partir de tu título y pregunta de investigación, lista los términos principales que necesitas definir y sustentar teóricamente.</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Busca fuentes académicas actualizadas</h4><p>Usa Google Scholar, Scopus, Redalyc, Scielo o las bases de datos de la biblioteca Univalle. Prioriza artículos de los últimos 5-10 años y autores reconocidos en el campo.</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Organiza los antecedentes de lo general a lo específico</h4><p>Presenta primero estudios internacionales, luego nacionales y finalmente locales o regionales, si los hay.</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Por cada antecedente incluye: autor, año, objetivo, metodología y hallazgo principal</h4><p>No basta con mencionar que existe el estudio; debes explicar qué encontró y cómo se relaciona con tu investigación.</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Cita correctamente en formato APA 7.ª edición</h4><p>Toda información tomada de otras fuentes debe ir entre comillas (cita textual) o parafraseada, siempre con la cita autor-año en el texto y la referencia completa al final.</p></div></div>
+  </div>`,
+  ejemplos:`
+  <div class="example-block"><div class="ex-label">Estructura de un antecedente bien descrito</div><p><strong>[Autor(es), año]</strong> realizaron un estudio cuyo objetivo fue [propósito del estudio]. Utilizando [metodología empleada], encontraron que [hallazgos principales]. Este antecedente es relevante para la presente investigación porque [relación con tu tema].</p></div>
+  <div class="example-block"><div class="ex-label">Ejemplo aplicado</div><p>García y Rodríguez (2022) realizaron un estudio cuyo objetivo fue evaluar la adopción de software ERP en pequeñas empresas colombianas. Utilizando un diseño cuantitativo descriptivo con encuestas a 120 empresas de Bogotá, encontraron que el <strong>costo percibido y la falta de capacitación son los principales obstáculos</strong> para la digitalización. Este antecedente es relevante porque identifica factores similares a los que se esperan encontrar en el contexto de Palmira.</p></div>`,
+  recursos:[
+    {tag:'tool',tagLabel:'Herramienta',title:'Google Scholar – Búsqueda de artículos académicos',desc:'Motor de búsqueda de literatura científica y académica gratuito.',link:'https://scholar.google.com'},
+    {tag:'tool',tagLabel:'Herramienta',title:'Redalyc – Revistas iberoamericanas de acceso abierto',desc:'Base de datos de artículos científicos en español y portugués.',link:'https://www.redalyc.org'},
+    {tag:'tool',tagLabel:'Herramienta',title:'Scielo Colombia – Literatura científica colombiana',desc:'Repositorio de revistas científicas colombianas.',link:'https://scielo.org.co'},
+    {tag:'guide',tagLabel:'Guía',title:'Cómo hacer una revisión de literatura',desc:'Paso a paso para buscar, seleccionar y organizar antecedentes de investigación.',link:'https://www.youtube.com/results?search_query=como+hacer+revision+de+literatura+investigacion'},
+    {tag:'video',tagLabel:'Video',title:'Marco teórico: estructura y redacción',desc:'Cómo organizar y redactar el marco teórico de una investigación.',link:'https://www.youtube.com/results?search_query=como+redactar+marco+teorico+investigacion'}
+  ],
+  fields:[
+    {key:'conceptos_clave',label:'Conceptos y teorías clave (lista resumida)',hint:'Lista los principales conceptos de tu estudio con su definición y autor/fuente.',placeholder:'1. [Concepto]: Según [Autor, año], se define como...\n2. [Concepto]: ...\n3. [Concepto]: ...',type:'textarea'},
+    {key:'antecedentes',label:'Antecedentes de investigación (mínimo 3 fuentes)',hint:'Describe brevemente estudios previos relacionados con tu tema: autor, año, objetivo, metodología y hallazgo clave.',placeholder:'Antecedente 1: [Autor(es), año] estudiaron... y encontraron...\nAntecedente 2: ...\nAntecedente 3: ...',type:'textarea'}
+  ]
+},
+{
+  id:'item-8',
+  num:8,
+  title:'Diseño Metodológico',
+  subtitle:'La estrategia que usarás para responder la pregunta de investigación con rigor científico.',
+  badge:'Metodología',
+  badgeColor:'var(--color-orange)',
+  badgeBg:'var(--color-orange-highlight)',
+  que:`<p>El <strong>diseño metodológico</strong> es el plan de acción de la investigación. Describe <em>cómo</em> se va a llevar a cabo el estudio: desde qué enfoque se abordará, qué tipo de investigación es, quiénes serán los participantes, cómo se recolectarán los datos y cómo se analizarán.</p>
+  <p>Una metodología bien definida garantiza que los resultados sean válidos, confiables y reproducibles. Es el apartado que más revisará un evaluador para juzgar la calidad científica de tu propuesta.</p>`,
+  como:`<div class="step-guide">
+  <div class="step-item"><div class="step-item-content"><h4>Define el enfoque de investigación</h4><p><strong>Cuantitativo:</strong> datos numéricos, estadística, medición objetiva.<br><strong>Cualitativo:</strong> comprensión de significados, entrevistas, análisis interpretativo.<br><strong>Mixto:</strong> combina ambos enfoques en el mismo estudio.</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Elige el tipo de estudio</h4><p><strong>Exploratorio:</strong> tema poco estudiado, genera ideas.<br><strong>Descriptivo:</strong> caracteriza el fenómeno sin establecer causas.<br><strong>Correlacional:</strong> mide la relación entre dos o más variables.<br><strong>Explicativo/causal:</strong> busca establecer causas y efectos.</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Define la población y la muestra</h4><p><strong>Población:</strong> todos los individuos u objetos de interés.<br><strong>Muestra:</strong> el subgrupo que efectivamente estudiarás. Especifica el tamaño y cómo la seleccionarás (muestreo aleatorio, por conveniencia, etc.).</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Selecciona técnicas e instrumentos de recolección</h4><p><strong>Encuesta</strong> (cuestionario), <strong>entrevista</strong> (guía de entrevista), <strong>observación</strong> (ficha de observación), <strong>revisión documental</strong> (matriz de análisis).</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Describe el procedimiento y las estrategias de análisis</h4><p>Explica paso a paso cómo recolectarás los datos y cómo los analizarás (estadística descriptiva/inferencial, análisis de contenido, triangulación, etc.).</p></div></div>
+  </div>`,
+  ejemplos:`
+  <div class="example-block"><div class="ex-label">Ejemplo de diseño metodológico completo</div><p>La presente investigación tiene un <strong>enfoque cuantitativo</strong> y es de tipo <strong>descriptivo-correlacional</strong>. La población está conformada por las MIPYMES del sector textil registradas en la Cámara de Comercio de Palmira (N=145). Se trabajará con una <strong>muestra de 50 empresas</strong> seleccionadas mediante muestreo aleatorio simple. El instrumento de recolección será un <strong>cuestionario estructurado de 25 ítems</strong> en escala Likert, aplicado a los gerentes o propietarios. Los datos serán analizados con estadística descriptiva (frecuencias, medias) y correlación de Pearson mediante el software SPSS versión 28.</p></div>`,
+  recursos:[
+    {tag:'video',tagLabel:'Video',title:'Enfoques de investigación: cuantitativo vs cualitativo',desc:'Diferencias, ventajas y cuándo usar cada enfoque de investigación.',link:'https://www.youtube.com/results?search_query=diferencia+investigacion+cuantitativa+cualitativa+mixta'},
+    {tag:'video',tagLabel:'Video',title:'Tipos de investigación: descriptiva, correlacional, explicativa',desc:'Clasificación de los tipos de estudio con ejemplos claros.',link:'https://www.youtube.com/results?search_query=tipos+de+investigacion+descriptiva+correlacional+explicativa'},
+    {tag:'guide',tagLabel:'Guía',title:'Cómo calcular el tamaño de muestra',desc:'Fórmulas y criterios para determinar el tamaño de muestra en estudios cuantitativos.',link:'https://www.youtube.com/results?search_query=como+calcular+tamano+de+muestra+investigacion'},
+    {tag:'tool',tagLabel:'Herramienta',title:'Google Forms – Diseño de encuestas digitales',desc:'Herramienta gratuita para crear y aplicar encuestas en línea.',link:'https://docs.google.com/forms'}
+  ],
+  fields:[
+    {key:'enfoque_tipo',label:'Enfoque y tipo de investigación',hint:'Especifica si es cuantitativo, cualitativo o mixto, y el tipo de estudio (descriptivo, correlacional, etc.)',placeholder:'Esta investigación tiene un enfoque [cuantitativo/cualitativo/mixto] y es de tipo [exploratorio/descriptivo/correlacional/explicativo], porque...',type:'textarea'},
+    {key:'poblacion_muestra',label:'Población y muestra',hint:'¿A quiénes se estudiará? ¿Cuántos son? ¿Cómo se seleccionará la muestra?',placeholder:'Población: [descripción y tamaño total]\nMuestra: [tamaño y criterio de selección]',type:'textarea'},
+    {key:'tecnicas',label:'Técnicas e instrumentos de recolección',hint:'¿Qué técnica(s) usarás y cuál será el instrumento concreto?',placeholder:'Técnica: Encuesta / Instrumento: Cuestionario de X ítems en escala Likert...\nTécnica: Entrevista / Instrumento: Guía de entrevista semiestructurada...',type:'textarea'},
+    {key:'procedimiento',label:'Procedimiento y análisis de datos',hint:'Describe los pasos para recolectar y analizar la información.',placeholder:'Paso 1: ...\nPaso 2: ...\nAnálisis: Los datos serán procesados mediante...',type:'textarea'}
+  ]
+},
+{
+  id:'item-9',
+  num:9,
+  title:'Cronograma Preliminar',
+  subtitle:'Planeación temporal de las actividades principales del proyecto de investigación.',
+  badge:'Planeación',
+  badgeColor:'var(--color-primary)',
+  badgeBg:'var(--color-primary-highlight)',
+  que:`<p>El <strong>cronograma</strong> es la representación temporal de las actividades del proyecto. Permite planificar cuándo se hará cada fase del trabajo y verificar que el proyecto sea factible en el tiempo disponible (generalmente un semestre académico).</p>
+  <p>Un cronograma realista y bien organizado demuestra al evaluador que el equipo ha pensado con seriedad en la ejecución del proyecto y que los tiempos son alcanzables.</p>
+  <div class="highlight-box tip"><h4>💡 Diagrama de Gantt</h4><p>El formato más común es el Diagrama de Gantt: una tabla donde las filas son las actividades y las columnas son las semanas o meses. Se marcan las semanas en que cada actividad estará en curso.</p></div>`,
+  como:`<div class="step-guide">
+  <div class="step-item"><div class="step-item-content"><h4>Lista todas las actividades del proyecto</h4><p>Agrupa las actividades por fases: (1) revisión de literatura, (2) diseño y validación de instrumentos, (3) recolección de datos, (4) análisis de resultados, (5) redacción y entrega del informe final.</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Estima el tiempo de cada actividad</h4><p>Sé realista. Considera que eres estudiante de primer semestre con otras asignaturas. Un proyecto de semestre suele ejecutarse en 12-16 semanas.</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Construye la tabla o diagrama de Gantt</h4><p>Puedes hacerlo en Excel, Google Sheets, o usar herramientas en línea como TeamGantt o Trello. También puedes representarlo en una tabla simple.</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Incluye fechas clave (hitos)</h4><p>Marca las fechas de entrega parciales, presentaciones y entrega final del proyecto al docente.</p></div></div>
+  </div>`,
+  ejemplos:`
+  <div class="example-block"><div class="ex-label">Estructura de cronograma en tabla (16 semanas)</div><p><strong>Sem 1-2:</strong> Revisión y ajuste de la propuesta.<br><strong>Sem 3-4:</strong> Revisión de literatura y marco teórico.<br><strong>Sem 5-6:</strong> Diseño y validación de instrumentos.<br><strong>Sem 7-10:</strong> Recolección de datos (aplicación de instrumentos).<br><strong>Sem 11-12:</strong> Procesamiento y análisis de datos.<br><strong>Sem 13-14:</strong> Redacción de resultados y discusión.<br><strong>Sem 15:</strong> Revisión y corrección del informe final.<br><strong>Sem 16:</strong> Entrega y presentación final.</p></div>`,
+  recursos:[
+    {tag:'tool',tagLabel:'Herramienta',title:'TeamGantt – Diagrama de Gantt en línea (gratis)',desc:'Herramienta gratuita para crear diagramas de Gantt profesionales.',link:'https://www.teamgantt.com'},
+    {tag:'tool',tagLabel:'Herramienta',title:'Google Sheets – Plantilla de Gantt',desc:'Crea tu cronograma en Google Sheets con una plantilla de Gantt disponible.',link:'https://docs.google.com/spreadsheets'},
+    {tag:'video',tagLabel:'Video',title:'Cómo hacer un cronograma de investigación',desc:'Tutorial para elaborar el cronograma de un proyecto de investigación.',link:'https://www.youtube.com/results?search_query=como+hacer+cronograma+proyecto+investigacion+gantt'}
+  ],
+  fields:[
+    {key:'cronograma',label:'Actividades y tiempo estimado',hint:'Describe las actividades principales y el tiempo (semanas o meses) que dedicarás a cada una.',placeholder:'Actividad 1: [nombre] – Semanas: [x a y]\nActividad 2: [nombre] – Semanas: [x a y]\nActividad 3: [nombre] – Semanas: [x a y]\n...',type:'textarea'}
+  ]
+},
+{
+  id:'item-10',
+  num:10,
+  title:'Recursos Necesarios',
+  subtitle:'Identificación de los medios humanos, materiales, tecnológicos y financieros requeridos.',
+  badge:'Viabilidad',
+  badgeColor:'var(--color-success)',
+  badgeBg:'var(--color-success-highlight)',
+  que:`<p>Este ítem describe todos los <strong>recursos que se necesitan</strong> para ejecutar el proyecto con éxito. Incluye personas (recursos humanos), equipos y materiales (físicos), herramientas informáticas (tecnológicos) y presupuesto estimado (financieros).</p>
+  <p>Identificar los recursos con anticipación permite evaluar la <strong>viabilidad real</strong> del proyecto: si no se cuenta con los recursos necesarios, es mejor ajustar el diseño desde la propuesta.</p>`,
+  como:`<div class="step-guide">
+  <div class="step-item"><div class="step-item-content"><h4>Recursos humanos</h4><p>¿Quiénes participarán? Investigadores principales (tú y tu equipo), asesores, expertos que consultarás, participantes del estudio.</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Recursos materiales</h4><p>Papelería, materiales de laboratorio, transporte, espacio físico, entre otros.</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Recursos tecnológicos</h4><p>Computadores, software de análisis (SPSS, Excel, NVivo, Atlas.ti), plataformas de encuesta (Google Forms, SurveyMonkey), acceso a bases de datos académicas.</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Recursos financieros (presupuesto estimado)</h4><p>Elabora un presupuesto básico en pesos colombianos (COP) con los gastos principales: fotocopias, transporte, internet, impresión del informe final, etc.</p></div></div>
+  </div>`,
+  ejemplos:`
+  <div class="example-block"><div class="ex-label">Ejemplo de tabla de recursos</div><p><strong>Humanos:</strong> 2 investigadores, 1 docente asesor, 50 gerentes de MIPYME (participantes).<br><strong>Materiales:</strong> 50 cuestionarios impresos, esferos, carpetas de presentación.<br><strong>Tecnológicos:</strong> 2 computadores portátiles, SPSS 28 (licencia universitaria), Google Forms, Microsoft Excel, acceso Scopus (Biblioteca Univalle).<br><strong>Financieros:</strong> Fotocopias e impresiones $80.000, Transporte $120.000, Impresión informe final $50.000. <strong>Total estimado: $250.000 COP.</strong></p></div>`,
+  recursos:[
+    {tag:'tool',tagLabel:'Herramienta',title:'SPSS – Software de análisis estadístico',desc:'Software estándar para análisis cuantitativo en ciencias sociales.',link:'https://www.ibm.com/es-es/products/spss-statistics'},
+    {tag:'tool',tagLabel:'Herramienta',title:'SurveyMonkey – Encuestas en línea',desc:'Plataforma para diseñar y aplicar encuestas digitales de forma gratuita.',link:'https://es.surveymonkey.com'},
+    {tag:'tool',tagLabel:'Herramienta',title:'Biblioteca Digital Univalle',desc:'Acceso a bases de datos académicas disponibles para estudiantes de la Universidad del Valle.',link:'https://bibliotecadigital.univalle.edu.co'}
+  ],
+  fields:[
+    {key:'recursos',label:'Lista de recursos necesarios',hint:'Describe los recursos humanos, materiales, tecnológicos y financieros del proyecto.',placeholder:'Recursos humanos: ...\nRecursos materiales: ...\nRecursos tecnológicos: ...\nRecursos financieros (presupuesto estimado): ...',type:'textarea'}
+  ]
+},
+{
+  id:'item-11',
+  num:11,
+  title:'Referencias Preliminares',
+  subtitle:'Lista de fuentes consultadas, registradas en formato APA 7.ª edición.',
+  badge:'Bibliografía',
+  badgeColor:'var(--color-text-muted)',
+  badgeBg:'var(--color-surface-dynamic)',
+  que:`<p>Las <strong>referencias bibliográficas</strong> son la lista de todas las fuentes que citaste en tu propuesta. Su función es: (1) dar crédito a los autores originales de las ideas que usaste, (2) permitir al lector consultar las fuentes originales y (3) demostrar que la propuesta se basa en conocimiento sólido y verificable.</p>
+  <p>En Colombia y en la mayoría de universidades latinoamericanas, el formato estándar para ciencias sociales y tecnología es el <strong>formato APA, 7.ª edición</strong> (American Psychological Association, 2020).</p>
+  <div class="highlight-box warning"><h4>⚠️ Plagio académico</h4><p>Usar ideas, datos o textos de otras personas sin citarlos correctamente constituye plagio, una falta grave de integridad académica sancionada por el reglamento de la Universidad del Valle.</p></div>`,
+  como:`<div class="step-guide">
+  <div class="step-item"><div class="step-item-content"><h4>Cita toda fuente que uses en el texto (cita en texto)</h4><p>Formato básico: (Apellido, año) para paráfrasis o (Apellido, año, p. X) para citas textuales. Ejemplo: (Hernández et al., 2014, p. 52).</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Registra la referencia completa al final (lista de referencias)</h4><p>Cada fuente citada en el texto debe aparecer en la lista de referencias y viceversa.</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Organiza las referencias en orden alfabético</h4><p>Por el apellido del primer autor. Usa sangría francesa (la primera línea va al margen y las siguientes van indentadas 5 espacios).</p></div></div>
+  <div class="step-item"><div class="step-item-content"><h4>Usa un gestor de referencias</h4><p>Herramientas como Zotero, Mendeley o el mismo Google Scholar pueden generar automáticamente las referencias en formato APA.</p></div></div>
+  </div>
+  <div class="highlight-box tip" style="margin-top:var(--space-4)"><h4>📚 Formatos APA 7 más usados</h4><p><strong>Libro:</strong> Apellido, N. (Año). <em>Título del libro</em>. Editorial.<br><strong>Artículo:</strong> Apellido, N., & Apellido, N. (Año). Título del artículo. <em>Nombre de la Revista, volumen</em>(número), páginas. https://doi.org/xxx<br><strong>Página web:</strong> Apellido, N. (Año, día de mes). Título de la página. Nombre del sitio. URL<br><strong>Tesis:</strong> Apellido, N. (Año). <em>Título de la tesis</em> [Tesis de pregrado, Universidad]. Repositorio.</p></div>`,
+  ejemplos:`
+  <div class="example-block"><div class="ex-label">Ejemplo – Libro</div><p>Hernández Sampieri, R., Fernández Collado, C., & Baptista Lucio, P. (2014). <em>Metodología de la investigación</em> (6.ª ed.). McGraw-Hill.</p></div>
+  <div class="example-block"><div class="ex-label">Ejemplo – Artículo de revista</div><p>García, M., & Rodríguez, A. (2022). Factores de adopción de ERP en MIPYMES colombianas. <em>Revista de Ingeniería e Innovación, 15</em>(2), 34–50. https://doi.org/10.1234/rii.2022.15.2.34</p></div>
+  <div class="example-block"><div class="ex-label">Ejemplo – Página web</div><p>Departamento Administrativo Nacional de Estadística [DANE]. (2022). <em>Encuesta nacional de uso de TIC en empresas 2022</em>. https://www.dane.gov.co/estadisticas-tic-empresas</p></div>`,
+  recursos:[
+    {tag:'tool',tagLabel:'Herramienta',title:'Zotero – Gestor de referencias gratuito',desc:'Herramienta de código abierto para recopilar, organizar y citar fuentes académicas.',link:'https://www.zotero.org'},
+    {tag:'tool',tagLabel:'Herramienta',title:'Google Scholar – Generar citas APA automáticamente',desc:'Haz clic en las comillas bajo un resultado para obtener la cita en APA.',link:'https://scholar.google.com'},
+    {tag:'guide',tagLabel:'Guía',title:'APA Style – Guía oficial 7.ª edición',desc:'Recurso oficial de APA con ejemplos de todos los tipos de referencias.',link:'https://apastyle.apa.org/style-grammar-guidelines/references'},
+    {tag:'video',tagLabel:'Video',title:'Cómo citar en formato APA 7 – Tutorial completo',desc:'Tutorial paso a paso sobre normas APA 7ª edición con ejemplos en español.',link:'https://www.youtube.com/results?search_query=como+citar+APA+7+edicion+tutorial+español'}
+  ],
+  fields:[
+    {key:'referencias',label:'Lista de referencias preliminares (mínimo 3)',hint:'Registra las fuentes que has consultado en formato APA 7.ª edición.',placeholder:'Autor, N. (Año). Título. Editorial/Revista.\n\nAutor, N., & Autor, N. (Año). Título del artículo. Nombre de la Revista, vol(num), pp. URL\n\nAutor, N. (Año). Título de la página web. Sitio. URL',type:'textarea'}
+  ]
+}
+];
+
+/* ══════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════ */
+const state = {
+  current: -1,  // -1 = welcome
+  responses: {},
+  completed: new Set()
+};
+
+/* ══════════════════════════════════════════════
+   BUILD UI
+══════════════════════════════════════════════ */
+function buildSidebar(){
+  const nav = document.getElementById('sidebar-nav');
+  nav.innerHTML = ITEMS.map(item => `
+    <button class="sidebar-item" id="nav-${item.id}" onclick="navigateTo(${item.num-1})">
+      <span class="item-num">${item.num}</span>
+      <span class="item-label">${item.title}</span>
+      <svg class="done-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+    </button>
+  `).join('');
+}
+
+function buildWelcomeSummary(){
+  const c = document.getElementById('items-summary');
+  c.innerHTML = ITEMS.map(item => `
+    <div class="summary-card">
+      <div class="num">${item.num.toString().padStart(2,'0')}</div>
+      <div class="name">${item.title}</div>
+    </div>
+  `).join('');
+}
+
+function buildPanels(){
+  const container = document.getElementById('panels-container');
+  container.innerHTML = ITEMS.map(item => `
+    <div class="item-panel" id="${item.id}">
+      <div class="item-header">
+        <span class="item-badge" style="background:${item.badgeBg};color:${item.badgeColor}">${item.num.toString().padStart(2,'0')} · ${item.badge}</span>
+        <h2 class="item-title">${item.title}</h2>
+        <p class="item-subtitle">${item.subtitle}</p>
+      </div>
+
+      <div class="tabs" role="tablist">
+        <button class="tab-btn active" role="tab" onclick="switchTab('${item.id}','que',this)">📖 ¿Qué es?</button>
+        <button class="tab-btn" role="tab" onclick="switchTab('${item.id}','como',this)">✏️ ¿Cómo elaborarlo?</button>
+        <button class="tab-btn" role="tab" onclick="switchTab('${item.id}','ejemplos',this)">💡 Ejemplos</button>
+        <button class="tab-btn" role="tab" onclick="switchTab('${item.id}','recursos',this)">🔗 Recursos</button>
+      </div>
+
+      <div class="tab-panel active" id="${item.id}-que">
+        <div class="info-card">${item.que}</div>
+      </div>
+      <div class="tab-panel" id="${item.id}-como">
+        <div class="info-card">${item.como}</div>
+      </div>
+      <div class="tab-panel" id="${item.id}-ejemplos">
+        <div class="info-card">${item.ejemplos}</div>
+      </div>
+      <div class="tab-panel" id="${item.id}-recursos">
+        <div class="info-card">
+          <h3>Recursos de apoyo</h3>
+          <p style="margin-bottom:var(--space-4)">Los siguientes recursos te ayudarán a profundizar en los conceptos y orientaciones de este ítem. Haz clic en cualquier tarjeta para acceder.</p>
+          <div class="resources-grid">
+            ${item.recursos.map(r => `
+              <div class="resource-card">
+                <a href="${r.link}" target="_blank" rel="noopener noreferrer">
+                  <span class="resource-tag tag-${r.tag}">${r.tagLabel}</span>
+                  <div class="resource-title">${r.title}</div>
+                  <div class="resource-desc">${r.desc}</div>
+                  <span class="resource-link">Abrir recurso
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                  </span>
+                </a>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+
+      <!-- WORKSPACE -->
+      <div class="workspace">
+        <div class="workspace-header">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          <div>
+            <h3>Tu propuesta – Ítem ${item.num}: ${item.title}</h3>
+            <p>Redacta aquí la información correspondiente a tu proyecto de investigación</p>
+          </div>
+        </div>
+        <div class="workspace-fields">
+          ${item.fields.map(f => `
+            <div class="field-group">
+              <label for="${item.id}-${f.key}">${f.label}</label>
+              <p class="field-hint">${f.hint}</p>
+              ${f.type === 'textarea'
+                ? `<textarea id="${item.id}-${f.key}" rows="5" placeholder="${f.placeholder}" oninput="saveField('${item.id}','${f.key}',this.value)">${state.responses[item.id+'-'+f.key]||''}</textarea>`
+                : `<input type="text" id="${item.id}-${f.key}" placeholder="${f.placeholder}" oninput="saveField('${item.id}','${f.key}',this.value)" value="${state.responses[item.id+'-'+f.key]||''}">`
+              }
+              <div class="char-count" id="cc-${item.id}-${f.key}"></div>
+            </div>
+          `).join('')}
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span class="save-indicator" id="saved-${item.id}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Guardado automáticamente
+            </span>
+            <button class="btn btn-secondary" onclick="markDone(${item.num-1})">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Marcar como completado
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-footer">
+        <button class="btn btn-secondary" onclick="navigateTo(${item.num-2})" ${item.num===1?'disabled':''}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+          ${item.num > 1 ? 'Ítem anterior' : 'Inicio'}
+        </button>
+        ${item.num < 11
+          ? `<button class="btn btn-primary" onclick="navigateTo(${item.num})">Siguiente ítem <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></button>`
+          : `<button class="btn btn-primary" onclick="exportContent()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Exportar propuesta completa</button>`
+        }
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ══════════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════════ */
+function showWelcome(){
+  state.current = -1;
+  document.getElementById('welcome-panel').style.display = 'block';
+  document.querySelectorAll('.item-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('main-content').scrollTop = 0;
+}
+
+function navigateTo(index){
+  if(index < 0){ showWelcome(); return; }
+  if(index >= ITEMS.length) return;
+  const item = ITEMS[index];
+  state.current = index;
+
+  document.getElementById('welcome-panel').style.display = 'none';
+  document.querySelectorAll('.item-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+
+  document.getElementById(item.id).classList.add('active');
+  document.getElementById('nav-'+item.id).classList.add('active');
+
+  // Reset to first tab
+  switchTabByPanel(item.id, 'que');
+  document.getElementById('main-content').scrollTop = 0;
+}
+
+function switchTab(itemId, tabName, btn){
+  const panel = document.getElementById(itemId);
+  panel.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  panel.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(itemId+'-'+tabName).classList.add('active');
+}
+
+function switchTabByPanel(itemId, tabName){
+  const panel = document.getElementById(itemId);
+  if(!panel) return;
+  panel.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  panel.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  panel.querySelectorAll('.tab-btn')[0].classList.add('active');
+  document.getElementById(itemId+'-que').classList.add('active');
+}
+
+/* ══════════════════════════════════════════════
+   SAVE / DONE
+══════════════════════════════════════════════ */
+function saveField(itemId, key, value){
+  state.responses[itemId+'-'+key] = value;
+  // char count
+  const cc = document.getElementById('cc-'+itemId+'-'+key);
+  if(cc) cc.textContent = value.length > 0 ? value.length + ' caracteres' : '';
+  // save indicator
+  const ind = document.getElementById('saved-'+itemId);
+  if(ind){ ind.classList.add('visible'); setTimeout(()=>ind.classList.remove('visible'),2000); }
+  updateProgress();
+}
+
+function markDone(index){
+  const item = ITEMS[index];
+  state.completed.add(item.id);
+  const navBtn = document.getElementById('nav-'+item.id);
+  navBtn.classList.add('done');
+  updateProgress();
+  if(index < ITEMS.length-1) setTimeout(()=>navigateTo(index+1), 400);
+}
+
+function updateProgress(){
+  const done = state.completed.size;
+  const total = ITEMS.length;
+  document.getElementById('progress-label').textContent = `${done} de ${total}`;
+  document.getElementById('progress-fill').style.width = `${(done/total)*100}%`;
+}
+
+/* ══════════════════════════════════════════════
+   EXPORT
+══════════════════════════════════════════════ */
+function exportContent(){
+  let text = 'PROPUESTA DE INVESTIGACIÓN\nUniversidad del Valle – Tecnología en Desarrollo de Software\n';
+  text += '='.repeat(60) + '\n\n';
+
+  ITEMS.forEach(item => {
+    text += `${'─'.repeat(60)}\n`;
+    text += `ÍTEM ${item.num}: ${item.title.toUpperCase()}\n`;
+    text += '─'.repeat(60) + '\n\n';
+    item.fields.forEach(f => {
+      const val = state.responses[item.id+'-'+f.key] || '[Sin completar]';
+      text += `${f.label}\n`;
+      text += `${val}\n\n`;
+    });
+  });
+
+  text += '\n' + '='.repeat(60) + '\n';
+  text += `Exportado el ${new Date().toLocaleDateString('es-CO', {year:'numeric',month:'long',day:'numeric'})}\n`;
+  text += 'Guía Interactiva – Comprensión y Producción de Textos Académicos · Univalle\n';
+
+  const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'propuesta_investigacion.txt';
+  a.click();
+}
+
+/* ══════════════════════════════════════════════
+   DARK MODE
+══════════════════════════════════════════════ */
+(function(){
+  const t = document.querySelector('[data-theme-toggle]');
+  const r = document.documentElement;
+  let d = matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light';
+  r.setAttribute('data-theme', d);
+  if(t) t.addEventListener('click', () => {
+    d = d === 'dark' ? 'light' : 'dark';
+    r.setAttribute('data-theme', d);
+    t.setAttribute('aria-label', 'Cambiar a modo '+(d==='dark'?'claro':'oscuro'));
+    t.innerHTML = d === 'dark'
+      ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
+      : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  });
+})();
+
+/* ══════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════ */
+buildSidebar();
+buildWelcomeSummary();
+buildPanels();
+</script>
+</body>
+</html>
